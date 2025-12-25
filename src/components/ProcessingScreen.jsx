@@ -49,7 +49,6 @@ function ProcessingScreen({ photos, template, onStripGenerated, onError }) {
             <div className="film-frame"></div>
             <div className="film-frame"></div>
             <div className="film-frame"></div>
-            <div className="film-frame"></div>
           </div>
         </div>
         <h2 className="processing-title">Creating your strip...</h2>

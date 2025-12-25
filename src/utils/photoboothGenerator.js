@@ -29,14 +29,14 @@ export async function generatePhotoboothStrip(photoDataUrls, options = {}) {
         return
       }
 
-      // Strip dimensions - 1080x1920 for all templates
-      const STRIP_WIDTH = 1080
-      const STRIP_HEIGHT = 1920
+      // Strip dimensions - 600x1400 for classic, 1080x1920 for others
+      const STRIP_WIDTH = template === 'classic' ? 600 : 1080
+      const STRIP_HEIGHT = template === 'classic' ? 1400 : 1920
 
       canvas.width = STRIP_WIDTH
       canvas.height = STRIP_HEIGHT
 
-      // Background - flat dark color (neo-brutalist)
+      // Background - flat dark color
       ctx.fillStyle = '#0b0b0f'
       ctx.fillRect(0, 0, STRIP_WIDTH, STRIP_HEIGHT)
 
@@ -121,9 +121,10 @@ export async function generatePhotoboothStrip(photoDataUrls, options = {}) {
  * Get photo placements based on template
  */
 function getTemplatePlacements(template, width, height, photoCount) {
-  const HEADER_HEIGHT = 200
-  const FOOTER_HEIGHT = 150
-  const PADDING = 40
+  // Adjust header/footer heights for classic template (smaller for 1400px height)
+  const HEADER_HEIGHT = template === 'classic' ? 120 : 200
+  const FOOTER_HEIGHT = template === 'classic' ? 80 : 150
+  const PADDING = template === 'classic' ? 50 : 40
   const availableHeight = height - HEADER_HEIGHT - FOOTER_HEIGHT
   const availableWidth = width - (PADDING * 2)
 
@@ -134,25 +135,29 @@ function getTemplatePlacements(template, width, height, photoCount) {
       return getPolaroidPlacements(PADDING, HEADER_HEIGHT, availableWidth, availableHeight, photoCount)
     case 'classic':
     default:
-      return getClassicPlacements(PADDING, HEADER_HEIGHT, availableWidth, availableHeight, photoCount)
+      return getClassicPlacements(PADDING, HEADER_HEIGHT, width, height, photoCount)
   }
 }
 
 /**
- * Classic vertical strip layout
+ * Classic vertical strip layout - 600x1400px
+ * Each photo: 500×350px
+ * Gap: 60px between photos
  */
 function getClassicPlacements(padding, headerHeight, width, height, count) {
-  const spacing = 20
-  const photoHeight = (height - (spacing * (count - 1))) / count
+  const PHOTO_WIDTH = 500
+  const PHOTO_HEIGHT = 350
+  const spacing = 60 // Gap between photos
+  const photoX = (width - PHOTO_WIDTH) / 2 // Center horizontally
 
   return Array.from({ length: count }, (_, i) => ({
-    x: padding,
-    y: headerHeight + (i * (photoHeight + spacing)),
-    w: width,
-    h: photoHeight,
+    x: photoX,
+    y: headerHeight + (i * (PHOTO_HEIGHT + spacing)),
+    w: PHOTO_WIDTH,
+    h: PHOTO_HEIGHT,
     rotation: 0,
     borderWidth: 3,
-    borderRadius: 12
+    borderRadius: 8
   }))
 }
 
@@ -368,40 +373,53 @@ function drawHeader(ctx, width, template) {
     minute: '2-digit'
   })
 
+  // Adjust font sizes for classic template (smaller for 1400px strip)
+  const isClassic = template === 'classic'
+  const titleFont = isClassic ? 'bold 28px' : 'bold 48px'
+  const yearFont = isClassic ? 'bold 48px' : 'bold 72px'
+  const dateFont = isClassic ? '16px' : '24px'
+  const titleY = isClassic ? 35 : 60
+  const yearY = isClassic ? 75 : 130
+  const dateY = isClassic ? 105 : 180
+
   // Title - using accent purple
   ctx.fillStyle = '#6d28d9'
-  ctx.font = 'bold 48px "Bungee", cursive'
+  ctx.font = `${titleFont} "Bungee", cursive`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.fillText('Happy New Year!', width / 2, 60)
+  ctx.fillText('Happy New Year!', width / 2, titleY)
 
   // Year
   ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 72px "Bungee", cursive'
-  ctx.fillText(currentYear.toString(), width / 2, 130)
+  ctx.font = `${yearFont} "Bungee", cursive`
+  ctx.fillText(currentYear.toString(), width / 2, yearY)
 
   // Date and time
   ctx.fillStyle = '#6b7280'
-  ctx.font = '24px "Inter", sans-serif'
-  ctx.fillText(`${dateStr} • ${timeStr}`, width / 2, 180)
+  ctx.font = `${dateFont} "Inter", sans-serif`
+  ctx.fillText(`${dateStr} • ${timeStr}`, width / 2, dateY)
 }
 
 function drawFooter(ctx, width, height) {
-  const y = height - 100
+  const footerHeight = width === 600 ? 80 : 150
+  const y = height - footerHeight
+  const linePadding = width === 600 ? 50 : 100
+  const fontSize = width === 600 ? '14px' : '20px'
+  const textY = width === 600 ? y + 35 : y + 50
 
   // Simple line
   ctx.strokeStyle = '#6d28d9'
-  ctx.lineWidth = 3
+  ctx.lineWidth = 2
   ctx.beginPath()
-  ctx.moveTo(100, y)
-  ctx.lineTo(width - 100, y)
+  ctx.moveTo(linePadding, y + 20)
+  ctx.lineTo(width - linePadding, y + 20)
   ctx.stroke()
 
   // Footer text
   ctx.fillStyle = '#6b7280'
-  ctx.font = '20px "Inter", sans-serif'
+  ctx.font = `${fontSize} "Inter", sans-serif`
   ctx.textAlign = 'center'
-  ctx.fillText('New Year Photobooth 2026', width / 2, y + 50)
+  ctx.fillText('New Year Photobooth 2026', width / 2, textY)
 }
 
 function drawConfetti(ctx, width, height) {
@@ -431,6 +449,6 @@ function applyVignette(ctx, width, height) {
 }
 
 export const AVAILABLE_TEMPLATES = [
-  { id: 'classic', name: 'Classic Strip', icon: '📋' },
+  { id: 'classic', name: 'Classic Strip', icon: '□' },
   { id: 'grid', name: '2×2 Grid', icon: '⊞' }
 ]
