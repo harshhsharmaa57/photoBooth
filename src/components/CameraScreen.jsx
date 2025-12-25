@@ -484,43 +484,7 @@ function CameraScreen({ onPhotosCaptured, onCancel, template = "classic" }) {
             )}
           </button>
 
-          {/* Mobile-only camera flip for easier reach on phones */}
-          <button
-            className="control-btn mobile-toggle-camera-btn"
-            onClick={switchCamera}
-            disabled={isSwitching || isCapturing}
-            title={
-              facingMode === "user"
-                ? "Switch to back camera"
-                : "Switch to front camera"
-            }
-          >
-            <svg
-              className="button-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                d="M20 7v6h-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-              <path
-                d="M4 17v-6h6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </svg>
-            <span className="mobile-label">Flip</span>
-          </button>
+
         </div>
       </div>
     </div>

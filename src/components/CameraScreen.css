@@ -313,27 +313,6 @@
   transform: rotate(135deg);
 }
 
-/* Mobile-only flip button (hidden on desktop) */
-.mobile-toggle-camera-btn {
-  display: none;
-  min-width: 72px;
-}
-
-.mobile-toggle-camera-btn .mobile-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-left: 6px;
-}
-
-@media (max-width: 768px) {
-  .mobile-toggle-camera-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-}
-
 .icon-loading {
   width: 24px;
   height: 24px;
