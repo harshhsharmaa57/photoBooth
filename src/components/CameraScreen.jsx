@@ -10,51 +10,57 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const [isCapturing, setIsCapturing] = useState(false)
   const [error, setError] = useState(null)
+  const [facingMode, setFacingMode] = useState('user') // 'user' = front, 'environment' = back
+  const [isSwitching, setIsSwitching] = useState(false)
   const TOTAL_PHOTOS = 4
 
   useEffect(() => {
-    startCamera()
+    startCamera(facingMode)
     return () => {
       stopCamera()
     }
-  }, [])
+  }, [facingMode])
 
-  const startCamera = async () => {
+  const startCamera = async (mode) => {
     try {
-      // Try to get user-facing camera first, fallback to any available camera
+      // Stop any existing stream first
+      stopCamera()
+
       let stream
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { 
-            facingMode: 'user', 
-            width: { ideal: 1280 }, 
-            height: { ideal: 720 } 
+          video: {
+            facingMode: mode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
           }
         })
-      } catch (userFacingError) {
-        // Fallback to environment camera (back camera on mobile)
+      } catch (primaryError) {
+        // Fallback to the other camera mode
+        const fallbackMode = mode === 'user' ? 'environment' : 'user'
         try {
           stream = await navigator.mediaDevices.getUserMedia({
-            video: { 
-              facingMode: { ideal: 'environment' },
-              width: { ideal: 1280 }, 
-              height: { ideal: 720 } 
+            video: {
+              facingMode: { ideal: fallbackMode },
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
             }
           })
-        } catch (envError) {
+        } catch (fallbackError) {
           // Last resort: any available camera
           stream = await navigator.mediaDevices.getUserMedia({
             video: { width: { ideal: 1280 }, height: { ideal: 720 } }
           })
         }
       }
-      
+
       streamRef.current = stream
       if (videoRef.current) {
         videoRef.current.srcObject = stream
         // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           setError(null)
+          setIsSwitching(false)
         }
       }
     } catch (err) {
@@ -70,7 +76,14 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
         errorMessage += 'Please refresh the page and try again.'
       }
       setError(errorMessage)
+      setIsSwitching(false)
     }
+  }
+
+  const switchCamera = () => {
+    if (isSwitching || isCapturing) return
+    setIsSwitching(true)
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user')
   }
 
   const stopCamera = () => {
@@ -184,6 +197,14 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
         <div className="photo-counter">
           Photo {photos.length + 1} of {TOTAL_PHOTOS}
         </div>
+        <button
+          className="switch-camera-btn"
+          onClick={switchCamera}
+          disabled={isSwitching || isCapturing}
+          title={facingMode === 'user' ? 'Switch to back camera' : 'Switch to front camera'}
+        >
+          {isSwitching ? '⏳' : '🔄'}
+        </button>
       </div>
 
       <div className="camera-preview-container">
@@ -192,7 +213,7 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
           autoPlay
           playsInline
           muted
-          className="camera-preview"
+          className={`camera-preview ${facingMode === 'user' ? 'mirrored' : ''}`}
         />
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 

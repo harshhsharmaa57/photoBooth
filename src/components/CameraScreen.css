@@ -41,7 +41,7 @@
 
 .photo-counter {
   background: rgba(255, 215, 0, 0.2);
-  color: #FFD700;
+  color: #ffd700;
   padding: 0.5rem 1.5rem;
   border-radius: 25px;
   font-weight: 600;
@@ -64,7 +64,37 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.camera-preview.mirrored {
   transform: scaleX(-1); /* Mirror for selfie mode */
+}
+
+/* Switch Camera Button */
+.switch-camera-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.switch-camera-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(180deg);
+}
+
+.switch-camera-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .countdown-overlay {
@@ -84,10 +114,10 @@
 .countdown-number {
   font-size: clamp(6rem, 20vw, 12rem);
   font-weight: 900;
-  color: #FFD700;
+  color: #ffd700;
   text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
   animation: scaleIn 0.5s ease-out;
-  font-family: 'Bungee', cursive;
+  font-family: "Bungee", cursive;
 }
 
 .countdown-number.capture {
@@ -131,7 +161,7 @@
   height: 60px;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid #FFD700;
+  border: 2px solid #ffd700;
   flex-shrink: 0;
 }
 
@@ -145,7 +175,7 @@
   position: absolute;
   top: 2px;
   right: 2px;
-  background: #FFD700;
+  background: #ffd700;
   color: #000;
   width: 18px;
   height: 18px;
@@ -158,7 +188,7 @@
 }
 
 .capture-button {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
+  background: linear-gradient(135deg, #ffd700, #ffa500);
   color: #000;
   padding: 1.2rem 2rem;
   font-size: 1.2rem;
@@ -215,7 +245,7 @@
 }
 
 .error-message h2 {
-  color: #FFD700;
+  color: #ffd700;
   margin-bottom: 1rem;
   font-size: 1.8rem;
 }
@@ -236,7 +266,7 @@
 }
 
 .retry-button {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
+  background: linear-gradient(135deg, #ffd700, #ffa500);
   color: #000;
 }
 
@@ -271,7 +301,8 @@
 }
 
 @keyframes captureFlash {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
