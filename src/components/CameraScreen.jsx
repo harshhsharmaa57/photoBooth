@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import './CameraScreen.css'
 
+// localStorage key for sound preference
+const SOUND_ENABLED_KEY = 'photobooth_sound_enabled'
+
 function CameraScreen({ onPhotosCaptured, onCancel }) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -10,8 +13,13 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const [isCapturing, setIsCapturing] = useState(false)
   const [error, setError] = useState(null)
-  const [facingMode, setFacingMode] = useState('user') // 'user' = front, 'environment' = back
+  const [facingMode, setFacingMode] = useState('user')
   const [isSwitching, setIsSwitching] = useState(false)
+  const [isMuted, setIsMuted] = useState(() => {
+    // Load from localStorage, default to false (sound enabled)
+    const stored = localStorage.getItem(SOUND_ENABLED_KEY)
+    return stored === 'false' // stored 'false' means sound disabled = muted
+  })
   const TOTAL_PHOTOS = 4
 
   useEffect(() => {
@@ -21,9 +29,13 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
     }
   }, [facingMode])
 
+  // Persist mute preference to localStorage
+  useEffect(() => {
+    localStorage.setItem(SOUND_ENABLED_KEY, (!isMuted).toString())
+  }, [isMuted])
+
   const startCamera = async (mode) => {
     try {
-      // Stop any existing stream first
       stopCamera()
 
       let stream
@@ -36,7 +48,6 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
           }
         })
       } catch (primaryError) {
-        // Fallback to the other camera mode
         const fallbackMode = mode === 'user' ? 'environment' : 'user'
         try {
           stream = await navigator.mediaDevices.getUserMedia({
@@ -47,7 +58,6 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
             }
           })
         } catch (fallbackError) {
-          // Last resort: any available camera
           stream = await navigator.mediaDevices.getUserMedia({
             video: { width: { ideal: 1280 }, height: { ideal: 720 } }
           })
@@ -57,7 +67,6 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
       streamRef.current = stream
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           setError(null)
           setIsSwitching(false)
@@ -84,6 +93,10 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
     if (isSwitching || isCapturing) return
     setIsSwitching(true)
     setFacingMode(prev => prev === 'user' ? 'environment' : 'user')
+  }
+
+  const toggleMute = () => {
+    setIsMuted(prev => !prev)
   }
 
   const stopCamera = () => {
@@ -115,10 +128,11 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
     document.body.appendChild(flash)
     setTimeout(() => flash.remove(), 200)
 
-    // Play shutter sound (optional - using Web Audio API)
-    playShutterSound()
+    // Play shutter sound if not muted
+    if (!isMuted) {
+      playShutterSound()
+    }
 
-    // Check if we've captured all photos
     if (newPhotos.length >= TOTAL_PHOTOS) {
       setTimeout(() => {
         stopCamera()
@@ -130,20 +144,24 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
   }
 
   const playShutterSound = () => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    const oscillator = audioContext.createOscillator()
-    const gainNode = audioContext.createGain()
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
 
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
 
-    oscillator.frequency.value = 800
-    oscillator.type = 'sine'
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
+      oscillator.frequency.value = 800
+      oscillator.type = 'sine'
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
 
-    oscillator.start(audioContext.currentTime)
-    oscillator.stop(audioContext.currentTime + 0.1)
+      oscillator.start(audioContext.currentTime)
+      oscillator.stop(audioContext.currentTime + 0.1)
+    } catch (err) {
+      console.warn('Audio playback failed:', err)
+    }
   }
 
   const startCountdown = () => {
@@ -177,7 +195,7 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
     return (
       <div className="camera-screen error-screen">
         <div className="error-message">
-          <h2>⚠️ Camera Access Required</h2>
+          <h2>Camera Access Required</h2>
           <p>{error}</p>
           <button className="retry-button" onClick={() => window.location.reload()}>
             Refresh Page
@@ -193,7 +211,16 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
   return (
     <div className="camera-screen">
       <div className="camera-header">
-        <button className="cancel-btn" onClick={handleCancel}>✕</button>
+        <div className="header-left">
+          <button className="cancel-btn" onClick={handleCancel}>✕</button>
+          <button
+            className={`mute-btn ${isMuted ? 'muted' : ''}`}
+            onClick={toggleMute}
+            title={isMuted ? 'Unmute shutter sound' : 'Mute shutter sound'}
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </button>
+        </div>
         <div className="photo-counter">
           Photo {photos.length + 1} of {TOTAL_PHOTOS}
         </div>
@@ -266,4 +293,3 @@ function CameraScreen({ onPhotosCaptured, onCancel }) {
 }
 
 export default CameraScreen
-

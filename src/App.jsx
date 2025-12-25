@@ -9,8 +9,10 @@ function App() {
   const [screen, setScreen] = useState('landing')
   const [photos, setPhotos] = useState([])
   const [finalStrip, setFinalStrip] = useState(null)
+  const [selectedTemplate, setSelectedTemplate] = useState('classic')
 
-  const handleStart = () => {
+  const handleStart = (template) => {
+    setSelectedTemplate(template)
     setScreen('camera')
     setPhotos([])
     setFinalStrip(null)
@@ -34,7 +36,6 @@ function App() {
 
   const handleProcessingError = (error) => {
     console.error('Processing error:', error)
-    // Go back to camera screen on error
     setScreen('camera')
     setPhotos([])
     setFinalStrip(null)
@@ -52,6 +53,7 @@ function App() {
       {screen === 'processing' && (
         <ProcessingScreen
           photos={photos}
+          template={selectedTemplate}
           onStripGenerated={handleStripGenerated}
           onError={handleProcessingError}
         />
@@ -68,4 +70,3 @@ function App() {
 }
 
 export default App
-

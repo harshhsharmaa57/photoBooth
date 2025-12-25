@@ -1,7 +1,7 @@
 .camera-screen {
   width: 100%;
   min-height: 100vh;
-  background: #0a0a14;
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -17,37 +17,88 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: linear-gradient(to bottom, rgba(10, 10, 20, 0.9), transparent);
+  background: linear-gradient(to bottom, rgba(11, 11, 15, 0.9), transparent);
 }
 
-.cancel-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.5rem;
+.header-left {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.cancel-btn,
+.mute-btn {
+  background: var(--surface);
+  color: var(--text);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  font-size: 1.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-.cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
+.cancel-btn:hover,
+.mute-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,1);
+}
+
+.cancel-btn:active,
+.mute-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,1);
+}
+
+.mute-btn.muted {
+  background: var(--muted);
+  color: var(--text-light);
 }
 
 .photo-counter {
-  background: rgba(255, 215, 0, 0.2);
-  color: #ffd700;
+  background: var(--surface);
+  color: var(--text);
   padding: 0.5rem 1.5rem;
-  border-radius: 25px;
+  border-radius: var(--radius);
   font-weight: 600;
   font-size: 0.9rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Switch Camera Button */
+.switch-camera-btn {
+  background: var(--surface);
+  color: var(--text);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.switch-camera-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,1);
+}
+
+.switch-camera-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,1);
+}
+
+.switch-camera-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .camera-preview-container {
@@ -68,33 +119,7 @@
 }
 
 .camera-preview.mirrored {
-  transform: scaleX(-1); /* Mirror for selfie mode */
-}
-
-/* Switch Camera Button */
-.switch-camera-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.switch-camera-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(180deg);
-}
-
-.switch-camera-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  transform: scaleX(-1);
 }
 
 .countdown-overlay {
@@ -108,16 +133,14 @@
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
   z-index: 5;
-  animation: flash 0.3s;
 }
 
 .countdown-number {
   font-size: clamp(6rem, 20vw, 12rem);
   font-weight: 900;
-  color: #ffd700;
-  text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+  color: var(--surface);
+  font-family: 'Bungee', cursive;
   animation: scaleIn 0.5s ease-out;
-  font-family: "Bungee", cursive;
 }
 
 .countdown-number.capture {
@@ -131,17 +154,18 @@
   transform: translateX(-50%);
   z-index: 5;
   text-align: center;
-  color: #fff;
+  background: var(--surface);
+  color: var(--text);
   font-size: 1.1rem;
-  background: rgba(0, 0, 0, 0.5);
   padding: 0.8rem 1.5rem;
-  border-radius: 25px;
-  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .camera-controls {
   padding: 1.5rem;
-  background: linear-gradient(to top, rgba(10, 10, 20, 0.95), transparent);
+  background: linear-gradient(to top, rgba(11, 11, 15, 0.95), transparent);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -161,8 +185,9 @@
   height: 60px;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid #ffd700;
+  border: 3px solid var(--border);
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .preview-photo img {
@@ -175,8 +200,8 @@
   position: absolute;
   top: 2px;
   right: 2px;
-  background: #ffd700;
-  color: #000;
+  background: var(--accent);
+  color: var(--text-light);
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -188,27 +213,29 @@
 }
 
 .capture-button {
-  background: linear-gradient(135deg, #ffd700, #ffa500);
-  color: #000;
+  background: var(--accent);
+  color: var(--text-light);
   padding: 1.2rem 2rem;
   font-size: 1.2rem;
   font-weight: 700;
-  border-radius: 50px;
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
-  transition: all 0.3s ease;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .capture-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0,0,0,1);
 }
 
 .capture-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,1);
 }
 
 .capture-icon {
@@ -238,20 +265,22 @@
 .error-message {
   text-align: center;
   max-width: 500px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface);
+  color: var(--text);
   padding: 2rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: var(--radius);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .error-message h2 {
-  color: #ffd700;
+  color: var(--danger);
   margin-bottom: 1rem;
   font-size: 1.8rem;
 }
 
 .error-message p {
-  color: #ccc;
+  color: var(--muted);
   margin-bottom: 2rem;
   line-height: 1.6;
 }
@@ -260,24 +289,33 @@
 .cancel-button {
   padding: 0.8rem 2rem;
   margin: 0.5rem;
-  border-radius: 25px;
+  border-radius: var(--radius);
   font-weight: 600;
-  transition: all 0.3s ease;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .retry-button {
-  background: linear-gradient(135deg, #ffd700, #ffa500);
-  color: #000;
+  background: var(--accent);
+  color: var(--text-light);
 }
 
 .cancel-button {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .retry-button:hover,
 .cancel-button:hover {
-  transform: translateY(-2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,1);
+}
+
+.retry-button:active,
+.cancel-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,1);
 }
 
 @keyframes flash {
@@ -301,8 +339,7 @@
 }
 
 @keyframes captureFlash {
-  0%,
-  100% {
+  0%, 100% {
     transform: scale(1);
   }
   50% {

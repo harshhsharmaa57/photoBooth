@@ -1,3 +1,19 @@
+:root {
+  --bg: #0b0b0f;
+  --surface: #ffffff;
+  --text: #0b0b0f;
+  --text-light: #ffffff;
+  --muted: #6b7280;
+  --accent: #6d28d9;
+  --accent-hover: #5b21b6;
+  --secondary: #06b6d4;
+  --danger: #ef4444;
+  --border: #0b0b0f;
+  --radius: 14px;
+  --shadow: 6px 6px 0 rgba(0,0,0,1);
+  --shadow-sm: 4px 4px 0 rgba(0,0,0,1);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,8 +26,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0a0a14;
-  color: #ffffff;
+  background: var(--bg);
+  color: var(--text-light);
   overflow-x: hidden;
 }
 
@@ -31,4 +47,3 @@ button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-

@@ -6,7 +6,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0a0a14 100%);
+  background: var(--bg);
 }
 
 .fireworks-canvas {
@@ -34,81 +34,109 @@
 .main-title {
   font-family: 'Bungee', cursive;
   font-size: clamp(3rem, 8vw, 6rem);
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B6B 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--accent);
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  animation: glow 2s ease-in-out infinite alternate;
 }
 
 .sub-title {
   font-family: 'Bungee', cursive;
   font-size: clamp(2rem, 6vw, 4rem);
-  color: #FFD700;
+  color: var(--text-light);
   margin-bottom: 1rem;
 }
 
 .year-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  color: #000;
+  background: var(--surface);
+  color: var(--text);
   padding: 0.5rem 2rem;
-  border-radius: 50px;
+  border-radius: var(--radius);
   font-family: 'Bungee', cursive;
   font-size: clamp(1.5rem, 4vw, 2.5rem);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-  animation: pulse 2s ease-in-out infinite;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .landing-description {
   font-size: clamp(1rem, 2vw, 1.25rem);
-  color: #cccccc;
+  color: var(--muted);
   margin-bottom: 3rem;
   line-height: 1.6;
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
+/* Template Selector */
+.template-selector {
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.template-selector h3 {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.template-options {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.template-btn {
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.template-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0,0,0,1);
+}
+
+.template-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,1);
+}
+
+.template-btn.active {
+  background: var(--accent);
+  color: var(--text-light);
+  border-color: var(--accent);
+}
+
 .start-button {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  color: #000;
+  background: var(--accent);
+  color: var(--text-light);
   padding: 1.2rem 3rem;
   font-size: clamp(1.1rem, 2.5vw, 1.5rem);
   font-weight: 700;
-  border-radius: 50px;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
-  transition: all 0.3s ease;
+  border-radius: var(--radius);
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   animation: fadeInUp 0.8s ease-out 0.4s both;
-  position: relative;
-  overflow: hidden;
-}
-
-.start-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s;
-}
-
-.start-button:hover::before {
-  left: 100%;
 }
 
 .start-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0,0,0,1);
 }
 
 .start-button:active {
-  transform: translateY(-1px);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,1);
 }
 
 .button-text {
@@ -118,7 +146,6 @@
 
 .button-sparkle {
   font-size: 1.5em;
-  animation: spin 2s linear infinite;
 }
 
 @keyframes fadeInUp {
@@ -131,31 +158,3 @@
     transform: translateY(0);
   }
 }
-
-@keyframes glow {
-  from {
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-  }
-  to {
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-

@@ -2,29 +2,32 @@ import { useEffect } from 'react'
 import { generatePhotoboothStrip } from '../utils/photoboothGenerator'
 import './ProcessingScreen.css'
 
-function ProcessingScreen({ photos, onStripGenerated, onError }) {
+function ProcessingScreen({ photos, template, onStripGenerated, onError }) {
   useEffect(() => {
     const processPhotos = async () => {
       // Simulate processing delay for better UX
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       try {
-        console.log('Processing photos:', photos.length)
+        console.log('Processing photos:', photos.length, 'with template:', template)
         if (!photos || photos.length === 0) {
           throw new Error('No photos to process')
         }
-        
-        const stripDataUrl = await generatePhotoboothStrip(photos)
+
+        const stripDataUrl = await generatePhotoboothStrip(photos, {
+          template: template || 'classic',
+          showConfetti: false,
+          showVignette: false
+        })
         console.log('Strip generated successfully')
-        
+
         if (!stripDataUrl) {
           throw new Error('Failed to generate strip')
         }
-        
+
         onStripGenerated(stripDataUrl)
       } catch (error) {
         console.error('Error generating strip:', error)
-        // Call error handler if provided, otherwise show alert
         if (onError) {
           onError(error)
         } else {
@@ -36,7 +39,7 @@ function ProcessingScreen({ photos, onStripGenerated, onError }) {
     if (photos && photos.length > 0) {
       processPhotos()
     }
-  }, [photos, onStripGenerated, onError])
+  }, [photos, template, onStripGenerated, onError])
 
   return (
     <div className="processing-screen">
@@ -49,8 +52,8 @@ function ProcessingScreen({ photos, onStripGenerated, onError }) {
             <div className="film-frame"></div>
           </div>
         </div>
-        <h2 className="processing-title">Developing your memories...</h2>
-        <p className="processing-subtitle">Creating your New Year photobooth strip</p>
+        <h2 className="processing-title">Creating your strip...</h2>
+        <p className="processing-subtitle">This will only take a moment</p>
         <div className="loading-dots">
           <span></span>
           <span></span>
@@ -62,4 +65,3 @@ function ProcessingScreen({ photos, onStripGenerated, onError }) {
 }
 
 export default ProcessingScreen
-
