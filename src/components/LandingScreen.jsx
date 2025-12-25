@@ -113,7 +113,7 @@ function LandingScreen({ onStart }) {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const currentYear = new Date().getFullYear()
+  const currentYear = 2026
 
   return (
     <div className="landing-screen">

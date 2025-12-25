@@ -56,7 +56,7 @@ function ResultScreen({ stripDataUrl, onRetake, onNewSession }) {
 
         const shareData = {
           files: [file],
-          title: 'New Year Photobooth 2025',
+          title: 'New Year Photobooth 2026',
           text: 'Check out my New Year photobooth strip! 🎉'
         }
 

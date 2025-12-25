@@ -144,9 +144,6 @@ export async function generatePhotoboothStrip(photoDataUrls) {
             ctx.closePath()
             ctx.stroke()
             
-            // Photo number badge
-            drawPhotoBadge(ctx, x + photoWidth - 50, y + 15, index + 1)
-            
             resolve()
           }
           img.onerror = (error) => {
@@ -202,7 +199,7 @@ export async function generatePhotoboothStrip(photoDataUrls) {
 }
 
 function drawHeader(ctx, width, height) {
-  const currentYear = new Date().getFullYear()
+  const currentYear = 2026 // New Year 2026
   const now = new Date()
   const dateStr = now.toLocaleDateString('en-US', { 
     month: 'long', 
@@ -249,32 +246,13 @@ function drawFooter(ctx, width, height, footerHeight) {
   ctx.fillStyle = '#FFFFFF'
   ctx.font = '20px "Inter", sans-serif'
   ctx.textAlign = 'center'
-  ctx.fillText('Made with ✨ New Year Photobooth', width / 2, y + 60)
-  
-  // Sparkles
-  for (let i = 0; i < 5; i++) {
-    const x = 100 + (i * (width - 200) / 4)
-    drawSparkle(ctx, x, y + 80, 8)
-  }
+  ctx.fillText('Made with ✨ New Year Photobooth 2026', width / 2, y + 60)
 }
 
-function drawPhotoBadge(ctx, x, y, number) {
-  // Badge background
-  ctx.fillStyle = 'rgba(255, 215, 0, 0.9)'
-  ctx.beginPath()
-  ctx.arc(x, y, 20, 0, Math.PI * 2)
-  ctx.fill()
-  
-  // Badge number
-  ctx.fillStyle = '#000000'
-  ctx.font = 'bold 18px "Inter", sans-serif'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(number.toString(), x, y)
-}
+// Removed photo badge function - no longer needed
 
 function drawDecorativeElements(ctx, width, height) {
-  // Confetti particles
+  // Simple confetti particles
   for (let i = 0; i < 30; i++) {
     const x = Math.random() * width
     const y = Math.random() * height
@@ -285,34 +263,10 @@ function drawDecorativeElements(ctx, width, height) {
     ctx.arc(x, y, size, 0, Math.PI * 2)
     ctx.fill()
   }
-  
-  // Sparkles
-  for (let i = 0; i < 20; i++) {
-    const x = Math.random() * width
-    const y = Math.random() * height
-    drawSparkle(ctx, x, y, Math.random() * 5 + 3)
-  }
 }
 
-function drawSparkle(ctx, x, y, size) {
-  ctx.strokeStyle = '#FFD700'
-  ctx.lineWidth = 1.5
-  ctx.beginPath()
-  ctx.moveTo(x, y - size)
-  ctx.lineTo(x, y + size)
-  ctx.moveTo(x - size, y)
-  ctx.lineTo(x + size, y)
-  ctx.stroke()
-  
-  // Diagonal lines
-  const diagSize = size * 0.7
-  ctx.beginPath()
-  ctx.moveTo(x - diagSize, y - diagSize)
-  ctx.lineTo(x + diagSize, y + diagSize)
-  ctx.moveTo(x - diagSize, y + diagSize)
-  ctx.lineTo(x + diagSize, y - diagSize)
-  ctx.stroke()
-}
+// Removed sparkle function - replaced with better New Year decorations
+
 
 function applyVignette(ctx, width, height) {
   const gradient = ctx.createRadialGradient(
